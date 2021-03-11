@@ -42,7 +42,6 @@ def plot_data(start_day, end_day, data):
     MACD = calculate_MACD(data)
     SIGNAL = calculate_signal(MACD)
     plt.figure(figsize=(20, 10))
-    plt.plot(data)
     plt.plot(MACD[8:len(MACD)])
     plt.plot(SIGNAL)
     plt.xlim(start_day, end_day)
