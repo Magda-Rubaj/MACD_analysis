@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import math 
 import matplotlib.pyplot as plt
 
 
@@ -38,11 +39,35 @@ def calculate_signal(data):
         SIGNAL.append(x)
     return SIGNAL
 
-def plot_data(start_day, end_day, data):
-    MACD = calculate_MACD(data)
-    SIGNAL = calculate_signal(MACD)
-    plt.figure(figsize=(20, 10))
-    plt.plot(MACD[8:len(MACD)])
-    plt.plot(SIGNAL)
+def plot_data(start_day, end_day, MACD, SIGNAL, data):
+    x = np.arange(0,len(data))
+    fig, (ax, ax2) = plt.subplots(2, figsize=(20,10), gridspec_kw={'height_ratios': [3, 1]})
+    ax.set_ylabel('Price')
+    ax2.set_ylabel('Indicator')
+
+    period = math.floor((end_day - start_day)/10)
+
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax2.spines['right'].set_visible(False)
+    ax2.spines['left'].set_visible(False)
+    
+    for idx, val in data.iterrows():
+        ax.plot([x[idx], x[idx]], [val['Min.'], val['Max.']], color='red')
+
+    ax.xaxis.grid(color='black', linestyle='dashed', which='both', alpha=0.1)
+    ax2.plot(x, MACD, color='orange', label='macd')
+    ax2.plot(x, SIGNAL, color='navy', label='signal')
+    ax2.legend()
+    ax2.yaxis.tick_right()
     plt.xlim(start_day, end_day)
+    plt.subplots_adjust(wspace=0, hspace=0)
+
+    ax2.set_xticks(x[::period])
+    ax2.set_xticklabels(data.Data.dt.date[::period], rotation=90)
+    ax.set_xticks([])
+    ax.set_xlim(start_day, end_day)
+    ax.set_title('MACD analysis\n', loc='left', fontsize=20)
+    ax2.set_xlim(start_day, end_day)
     plt.show()

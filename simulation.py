@@ -15,15 +15,14 @@ class Simulation:
         self.fund += shares_to_sell * current_price
         self.shares_owned -= shares_to_sell
 
-    def macd_transactions(self, traded_shares, data, time_range):
+    def macd_transactions(self, traded_shares, data, starting_day):
         above = 0
         below = 0
-        starting_day, exit_day = time_range
         if self.macd[starting_day] - self.signal[starting_day] > 0:
             above = 1
         else:
             below = 1
-        for i in range(starting_day+1, exit_day):
+        for i in range(starting_day+1, len(data)-1):
             if self.macd[i] - self.signal[i] > 0 and below:
                 self.buy(traded_shares, data[i])
                 below = 0
